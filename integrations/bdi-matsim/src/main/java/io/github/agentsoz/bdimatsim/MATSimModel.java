@@ -611,15 +611,15 @@ public final class MATSimModel implements ABMServerInterface, ModelInterface, Qu
 						new Location(link.getId().toString() + ":" + link.getToNode().getId().toString(), link.getToNode().getCoord().getX(), link.getToNode().getCoord().getY())
 				};
 				return coords;
-			case PerceptList.REQUEST_DRIVING_DISTANCE_TO :
+			case PerceptList.REQUEST_DRIVING_DISTANCE_TO : {
 				if (args == null || !(args instanceof double[])) {
-					throw new RuntimeException("Query percept '"+perceptID+"' expecting double[] coordinates argument, but found: " + args);
+					throw new RuntimeException("Query percept '" + perceptID + "' expecting double[] coordinates argument, but found: " + args);
 				}
 				double[] dest = (double[]) args;
-				Coord coord = new Coord( dest[0], dest[1] ) ;
-				final Link destLink = NetworkUtils.getNearestLink(getScenario().getNetwork(), coord );
+				Coord coord = new Coord(dest[0], dest[1]);
+				final Link destLink = NetworkUtils.getNearestLink(getScenario().getNetwork(), coord);
 				Gbl.assertNotNull(destLink);
-				final Link currentLink = scenario.getNetwork().getLinks().get( mobsimAgent.getCurrentLinkId() );
+				final Link currentLink = scenario.getNetwork().getLinks().get(mobsimAgent.getCurrentLinkId());
 				final double now = getTime();
 				//final Person person = scenario.getPopulation().getPersons().get(agentID);
 				double res = 0.0;
@@ -630,6 +630,36 @@ public final class MATSimModel implements ABMServerInterface, ModelInterface, Qu
 					res = RouteUtils.calcDistance(result);
 				}
 				return res;
+			}
+
+				//	mahkam
+			case PerceptList.REQUEST_DISTANCE_OF_LOCATIONS :{
+				if (args == null || !(args instanceof double[][])) {
+					throw new RuntimeException("Query percept '"+perceptID+"' expecting double[] coordinates argument, but found: " + args);
+				}
+				double[][] dest = (double[][]) args;
+
+				Coord coord1 = new Coord( dest[0][0], dest[0][1] ) ;
+				final Link link1 = NetworkUtils.getNearestLink(getScenario().getNetwork(), coord1 );
+				Gbl.assertNotNull(link1);
+
+				Coord coord2 = new Coord( dest[1][0], dest[1][1] ) ;
+				final Link link2 = NetworkUtils.getNearestLink(getScenario().getNetwork(), coord2 );
+				Gbl.assertNotNull(link2);
+
+				final double now = getTime();
+				//final Person person = scenario.getPopulation().getPersons().get(agentID);
+				double res = 0.0;
+				synchronized (this.replanner) {
+					LeastCostPathCalculator.Path result = this.replanner.editRoutes(RoutingMode.carFreespeed).getPathCalculator().calcLeastCostPath(
+							link1.getFromNode(), link2.getFromNode(), now, null, null
+					);
+					res = RouteUtils.calcDistance(result);
+				}
+				return res;
+			}
+
+
 			case PerceptList.REQUEST_DESTINATION_COORDINATES :
 				double[] cords= {-1,-1};
 				if(this.getReplanner().editPlans().isAtRealActivity(mobsimAgent)){ // if agent is currently in an activity
