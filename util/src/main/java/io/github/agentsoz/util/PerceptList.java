@@ -41,6 +41,8 @@ public final class PerceptList {
 	public static final String AGENT_DATA_CONTAINER_FROM_BDI = "agent_data_container_from_bdi";
 	public static final String AGENT_DATA_CONTAINER_FROM_ABM = "agent_data_container_from_abm";
 
+	public static final String REQUEST_DISTANCE_OF_LOCATIONS = "request_distance_of_locations";
+
     // BDI Query Percept strings
 
     public static final String REQUEST_LOCATION = "request_location";
