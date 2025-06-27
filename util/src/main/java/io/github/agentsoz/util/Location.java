@@ -40,6 +40,9 @@ public class Location {
 	private String name;
 	public double x;
 	public double y;
+
+	public String zone;
+
 	private Object attributes;
 
 
@@ -54,18 +57,18 @@ public class Location {
 	 *            y part of the coordinate
 	 */
 	public Location(String n, double x, double y) {
-
 		name = n;
 		this.x = x;
 		this.y = y;
 	}
 
-	   public Location(String n, double x, double y, Object attributes) {
-	        name = n;
-	        this.x = x;
-	        this.y = y;
-	        this.attributes = attributes;
-	    }
+
+	public Location(String n, double x, double y, String z) {
+		name = n;
+		this.x = x;
+		this.y = y;
+		this.zone = z;
+	}
 
 	public static double distanceBetween(Location from, Location to) {
 		double dist = -1;
